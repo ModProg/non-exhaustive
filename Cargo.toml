@@ -1,6 +1,6 @@
 [package]
 name = "non-exhaustive"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 categories = ["development-tools", "no-std::no-alloc"]
 description = "macro to allow struct expressions of non_exhaustive structs"
