@@ -13,21 +13,37 @@ macro_rules! non_exhaustive {
         $(value.$field = $value;)*
         value
     }};
-    {$type:ty {$($field:ident: $value:expr)* $(,)?}} => {
+    {$type:ty {$($field:ident: $value:expr),* $(,)?}} => {
         $crate::non_exhaustive!($type {$($field: $value,)* ..::core::default::Default::default()})
     };
 }
 
 #[cfg(test)]
-mod import_resolution {
+#[allow(clippy::all, unused, clippy::pedantic)]
+mod test {
     use crate::non_exhaustive;
 
     #[non_exhaustive]
     #[derive(Default)]
-    struct Test {}
+    struct Test {
+        a: usize,
+        b: usize,
+        c: usize,
+    }
 
     #[test]
+    #[rustfmt::skip]
     fn test() {
         non_exhaustive!(Test {});
+        non_exhaustive!(Test { a: 1 });
+        non_exhaustive!(Test { a: 1, a: 2 });
+        non_exhaustive!(Test { a: 1, a: 2, a: 3 });
+        non_exhaustive!(Test { a: 1, });
+        non_exhaustive!(Test { a: 1, a: 2, });
+        non_exhaustive!(Test { a: 1, a: 2, a: 3, });
+        non_exhaustive!(Test { ..Default::default() });
+        non_exhaustive!(Test { a: 1, ..Default::default() });
+        non_exhaustive!(Test { a: 1, a: 2, ..Default::default() });
+        non_exhaustive!(Test { a: 1, a: 2, a: 3, ..Default::default() });
     }
 }
